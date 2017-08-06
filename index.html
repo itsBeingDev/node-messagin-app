@@ -1,0 +1,35 @@
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+<script
+  src="http://code.jquery.com/jquery-3.2.1.js"
+  integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
+  crossorigin="anonymous"></script>
+<form action="">
+  First name: <input type="text" name="FirstName" value="Mickey" id="k"><br>
+  <input type="submit" value="Submit">
+</form> 
+
+<div id="msg">
+
+<script type="text/javascript">
+	var socket = io.connect('http://localhost:8080');
+	socket.on('messages', function(data){
+		insertMessage(data);
+	});
+
+	$('form').submit(function(e){
+		e.preventDefault();
+		var messages = $('#k').val();
+		$('#msg').append("<p style='text-align:right'>"+messages+"</p>");
+		socket.emit('messages', messages);
+	});
+	insertMessage=function(data){
+		$('#msg').append("<p>"+data+"</p>");
+	}
+
+	socket.on('connect', function(data){
+		$('#status').html('connected to the server');
+		var nickname = prompt('What is your Name');
+		socket.emit('join', nickname);
+	});
+
+</script>
